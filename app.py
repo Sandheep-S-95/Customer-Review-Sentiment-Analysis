@@ -51,41 +51,12 @@ vectorizer, classifier = load_resources()
 if 'review_history' not in st.session_state:
     st.session_state.review_history = []
 
-# Streamlit interface
-def main():
-    st.title("Restaurant Review Sentiment Analyzer")
-
-    # Review input
-    user_review = st.text_area("Enter your restaurant review:", "")
-
-    # Predict button
-    if st.button("Predict Sentiment"):
-        if user_review.strip():
-            # Predict review
-            prediction = predict_review(user_review)
-            
-            # Store in history
-            st.session_state.review_history.append({
-                'review': user_review, 
-                'sentiment': 'Positive' if prediction == 1 else 'Negative'
-            })
-            
-            # Display result
-            if prediction == 1:
-                st.success("😊 Positive Review - The customer liked it!")
-            else:
-                st.error("☹️ Negative Review - The customer didn't like it!")
-            
-            # Visualizations
-            show_visualizations()
-        else:
-            st.warning("Please enter a review first!")
-
 
 # [Previous caching and preprocessing functions remain the same]
 
 def show_visualizations():
-    if st.session_state.review_history:
+    st.title("Overall Review Visualization")
+    if len(st.session_state.review_history) > 0:
         # Create DataFrame from history
         df = pd.DataFrame(st.session_state.review_history)
         
@@ -104,8 +75,8 @@ def show_visualizations():
                 marker_colors=['blue', 'yellow']
             )])
             fig1.update_layout(
-                title='Sentiment Distribution 📊',
-                title_x=0.5,  # Center the title
+                title='Sentiment Distribution 📈',
+                title_x=0,  # Center the title
                 height=400  # Adjust height for better display
             )
             st.plotly_chart(fig1)
@@ -115,20 +86,22 @@ def show_visualizations():
             fig2 = px.bar(
                 x=sentiment_counts.index, 
                 y=sentiment_counts.values, 
-                title='Review Sentiment Overview 📈',
+                title='Review Sentiment Overview 📊',
                 labels={'x':'Sentiment', 'y':'Number of Reviews'},
                 color=sentiment_counts.index,
                 color_discrete_map={'Positive':'green', 'Negative':'red'}
             )
             fig2.update_layout(
-                title_x=0.5,  # Center the title
+                title_x=0,  # Center the title
                 height=400  # Adjust height for better display
             )
             st.plotly_chart(fig2)
+    else:
+        st.text("Kindly enter review for visualization")  
 
 # Detailed test cases in tabular form
 def show_test_cases():
-    st.subheader("Comprehensive Test Cases")
+    st.title("Inputs you can try")
     
     detailed_cases = [
         {
@@ -177,9 +150,10 @@ def add_footer():
 
 # Main function
 def main():
-    st.title("Restaurant Review Sentiment Analyzer")
+    st.title("🍽️👨‍🍳Restaurant Review Sentiment Analyzer🥤🍔")
 
     # Review input
+    st.title("User's Review")
     user_review = st.text_area("Enter your restaurant review:", "")
 
     # Predict button
